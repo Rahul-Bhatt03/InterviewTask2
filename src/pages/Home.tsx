@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { BlogsCard } from "../components/ui/BlogsCard";
 import { useGetBlogsQuery } from "../hooks/Blogs.hooks";
 import { Pagination } from "../components/table/Pagination";
@@ -14,51 +14,34 @@ export const Home = () => {
     const [allBlogs, setAllBlogs] = useState<BlogsResponse[]>([]);
     const itemsPerPage = 8;
 
+    // Fetch ALL data
     const { data: fetchedBlogs = [], isFetching, isLoading } = useGetBlogsQuery({
         page: 1,
         limit: 100,
     });
 
     useEffect(() => {
-        console.log("Fetched Blogs:", fetchedBlogs);
-        console.log("Fetched Blogs Type:", typeof fetchedBlogs);
-        console.log("Is Array:", Array.isArray(fetchedBlogs));
-        console.log("Length:", fetchedBlogs?.length);
-    }, [fetchedBlogs]);
-
-    useEffect(() => {
         if (fetchedBlogs && Array.isArray(fetchedBlogs) && fetchedBlogs.length > 0) {
-            console.log("Setting blogs data with length:", fetchedBlogs.length);
             setAllBlogs(fetchedBlogs);
             setFilteredBlogs(fetchedBlogs);
             setCurrentPage(1);
         }
     }, [fetchedBlogs]);
 
-    const handleFilterChange = (filteredData: BlogsResponse[]) => {
-        console.log("Filter changed, new length:", filteredData.length);
+    const handleFilterChange = useCallback((filteredData: BlogsResponse[]) => {
         setFilteredBlogs(filteredData);
-        setCurrentPage(1);
-    };
+        setCurrentPage(1); 
+    }, []);
 
     const totalItems = filteredBlogs.length;
     const totalPages = totalItems > 0 ? Math.ceil(totalItems / itemsPerPage) : 0;
-    
-    console.log("Total Items:", totalItems);
-    console.log("Total Pages:", totalPages);
-    console.log("Current Page:", currentPage);
-
     const validCurrentPage = Math.min(currentPage, totalPages) || 1;
 
     const startIndex = (validCurrentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedData = filteredBlogs.slice(startIndex, endIndex);
 
-    console.log("Start Index:", startIndex, "End Index:", endIndex);
-    console.log("Paginated Data Length:", paginatedData.length);
-
     const handlePageChange = (newPage: number) => {
-        console.log("Page changed to:", newPage);
         if (newPage >= 1 && newPage <= totalPages) {
             setCurrentPage(newPage);
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -131,7 +114,11 @@ export const Home = () => {
                                     </span>
                                 )}
                             </h2>
-                            <BlogsCard blogs={paginatedData} />
+                            <BlogsCard 
+                                blogs={paginatedData}
+                                onBlogUpdated={() => {
+                                }}
+                            />
                         </div>
 
                         {totalPages > 1 && (
@@ -178,9 +165,7 @@ export const Home = () => {
                         <div className="p-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-2xl">
                             <div className="bg-white rounded-t-xl p-8">
                                 <BlogsForm
-                                    title=""
-                                    content=""
-                                    author=""
+                                    mode="create"
                                     onClose={() => setIsModalOpen(false)}
                                 />
                             </div>
