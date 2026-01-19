@@ -39,10 +39,10 @@ export const Login = () => {
         }
 
         const user = data; // RTK query result
-
+        console.log("data",user);
         const token = generateMockToken(user.email);
+        console.log("token",token);
         saveAuth(user, token);
-
         navigate("/home")
     }
 

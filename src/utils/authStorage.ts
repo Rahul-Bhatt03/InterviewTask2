@@ -1,5 +1,18 @@
 export const saveAuth = (user: any, token: string) => {
-  localStorage.setItem("app_user", JSON.stringify(user));
+  const safeUser = {
+    ...user[0],
+  };
+  delete safeUser.password;
+  const allowedFields = ['id', 'name', 'email'];
+  const filteredUser: any = {};
+  
+  allowedFields.forEach(field => {
+    if (user[0][field] !== undefined) {
+      filteredUser[field] = user[0][field];
+    }
+  });
+  
+  localStorage.setItem("app_user", JSON.stringify(filteredUser));
   localStorage.setItem("app_token", token);
 }
 
