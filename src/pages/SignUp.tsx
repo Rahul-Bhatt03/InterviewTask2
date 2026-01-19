@@ -13,7 +13,7 @@ export const SignUp = () => {
     const [hidePass, setHidePass] = useState(true)
     const [agreeTerms, setAgreeTerms] = useState(false)
     const [errors, setErrors] = useState<Record<string, string>>({})
-    const [register] = useRegisterUserMutation({ fullName, email, password })
+    const [register] = useRegisterUserMutation()
 
     const togglePass = () => {
         setHidePass(!hidePass)
@@ -33,8 +33,9 @@ export const SignUp = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        await register({ fullName, email, password })
+        await register({ name:fullName, email, password })
         resetForm()
+        alert("User Registered Successfully");
     }
 
     const passwordRequirements = [
@@ -46,10 +47,10 @@ export const SignUp = () => {
     ]
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
             <div className="max-w-2xl w-full">
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-                    <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-8 text-center">
+                    <div className="bg-linear-to-r from-emerald-600 to-teal-600 p-8 text-center">
                         <div className="w-20 h-20 mx-auto bg-white/10 rounded-full flex items-center justify-center mb-6">
                             <UserPlus size={40} className="text-white" />
                         </div>
@@ -118,21 +119,6 @@ export const SignUp = () => {
                                     </div>
                                 </div>
 
-                                {/* <div>
-                                    <PasswordUi 
-                                        password={confirmPassword} 
-                                        showPass={hidePass} 
-                                        onToggle={togglePass}
-                                        label="Confirm Password"
-                                        onChange={(e) => {
-                                            setConfirmPassword(e.target.value)
-                                            validateFieldHandler('confirmPassword', e.target.value)
-                                        }}
-                                    />
-                                    {errors.confirmPassword && (
-                                        <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-                                    )}
-                                </div> */}
                             </div>
 
                             <div className="flex items-start">

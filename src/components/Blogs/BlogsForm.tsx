@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import type { CreateBlog } from "../../hooks/types"
 import { BlogInput } from "../ui/BlogInput"
 import { useCreateBlogMutation, useUpdateBlogMutation } from "../../hooks/Blogs.hooks";
 import { RichTextEditor } from "../ui/TextEditor";
@@ -81,7 +80,7 @@ export const BlogsForm = ({
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl shadow-xl border border-gray-100">
+        <div className="max-w-4xl mx-auto p-6 bg-linear-to-br from-gray-50 to-white rounded-2xl shadow-xl border border-gray-100">
             <form onSubmit={handleSubmit} className="space-y-6">
 
                 <div className="flex justify-between items-center mb-6">
