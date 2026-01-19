@@ -2,9 +2,9 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Layout } from "../components/layout/Layout";
 
-const Home = lazy(() => import('../pages/Products').then(module => ({ default: module.Products })))
-const Users = lazy(() => import('../pages/User').then(module => ({ default: module.Users })));
-const Medicines = lazy(() => import('../pages/Medicines').then(module => ({ default: module.Medicines })));
+const Home = lazy(() => import('../pages/Home').then(module => ({ default: module.Home })))
+const Login = lazy(() => import("../pages/Login").then(module => ({ default: module.Login })))
+const SignUp = lazy(() => import("../pages/SignUp").then(module => ({ default: module.SignUp })))
 
 const LoadingSpinner = () => (
     <div className="flex items-center justify-center h-64">
@@ -26,21 +26,21 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: 'users',
+                path: 'login',
                 element: (
                     <Suspense fallback={<LoadingSpinner />}>
-                        <Users />
+                        <Login />
                     </Suspense>
-                )
+                ),
             },
             {
-                path: 'medicines',
+                path: 'signup',
                 element: (
                     <Suspense fallback={<LoadingSpinner />}>
-                        <Medicines />
+                        <SignUp />
                     </Suspense>
-                )
-            }
+                ),
+            },
         ]
     }
 ])

@@ -1,21 +1,18 @@
 // app/store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { usersApiSlice } from "../features/users/userSlice";
-import { productsApiSlice } from "../features/products/productSlice";
-import { medicinesApi } from "../features/medicines/medicineSlice";
+import { authApi } from "../hooks/Auth.hooks";
+import { blogsApi } from "../hooks/Blogs.hooks";
 
 export const store = configureStore({
   reducer: {
-    [usersApiSlice.reducerPath]: usersApiSlice.reducer,
-    [productsApiSlice.reducerPath]: productsApiSlice.reducer,
-    [medicinesApi.reducerPath]: medicinesApi.reducer,
+   [blogsApi.reducerPath]: blogsApi.reducer,
+    [authApi.reducerPath]: authApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .concat(usersApiSlice.middleware)
-      .concat(productsApiSlice.middleware)
-      .concat(medicinesApi.middleware),
+      .concat(blogsApi.middleware)
+      .concat(authApi.middleware)
 });
 
 setupListeners(store.dispatch);
