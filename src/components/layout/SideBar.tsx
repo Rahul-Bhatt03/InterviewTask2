@@ -1,6 +1,6 @@
-import { Home, Users, X } from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { clearAuth, getAuth } from '../../utils/authStorage';
+import { Home, X } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { getAuth } from '../../utils/authStorage';
 import { Logout } from '../ui/Logout';
 
 interface SideBarProps {
@@ -10,7 +10,6 @@ interface SideBarProps {
 
 export const Sidebar = ({ isMobileOpen, setIsMobileOpen }: SideBarProps) => {
   const location = useLocation();
-  const navigate = useNavigate()
 
   const navItems = [
     { id: 'Dashboard', label: 'DashBoard', icon: Home, path: '/home' },
@@ -31,7 +30,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }: SideBarProps) => {
         className={`
           fixed lg:static inset-y-0 left-0 z-50
           w-64 lg:w-[18%] min-w-[200px] lg:min-w-0
-          bg-gradient-to-b from-slate-900 to-slate-800
+          bg-linear-to-b from-slate-900 to-slate-800
           border-r border-slate-700
           transform transition-transform duration-300 ease-in-out
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
@@ -87,7 +86,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }: SideBarProps) => {
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-white font-semibold">
-                    {userData?.user?.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || 'U'}
+                {userData?.user?.name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2) || 'U'}
                   </span>
                 </div>
                 <div className="min-w-0">
