@@ -5,7 +5,7 @@ import Underline from '@tiptap/extension-underline'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import { FiBold, FiItalic, FiUnderline, FiList, FiCode, FiLink, FiType  } from 'react-icons/fi'
-import { MdRedo,  MdLooksOne, MdLooksTwo } from 'react-icons/md'
+import { MdRedo,  MdLooksOne } from 'react-icons/md'
 
 interface RichTextEditorProps {
   value: string
