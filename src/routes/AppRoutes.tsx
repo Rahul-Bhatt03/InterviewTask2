@@ -1,50 +1,57 @@
 import { lazy, Suspense } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { Layout } from "../components/layout/Layout";
+import { PrivateRoute } from "./PrivateRoute";
 
-const Home = lazy(() => import('../pages/Products').then(module => ({ default: module.Products })))
-const Users = lazy(() => import('../pages/User').then(module => ({ default: module.Users })));
-const Medicines = lazy(() => import('../pages/Medicines').then(module => ({ default: module.Medicines })));
+const Home = lazy(() => import('../pages/Home').then(m => ({ default: m.Home })));
+const Login = lazy(() => import("../pages/Login").then(m => ({ default: m.Login })));
+const SignUp = lazy(() => import("../pages/SignUp").then(m => ({ default: m.SignUp })));
 
 const LoadingSpinner = () => (
-    <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-    </div>
+  <div className="flex items-center justify-center h-64">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
 );
 
 const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <Layout />,
+  {
+    path: "/",
+    element: <Navigate to="/login" replace />
+  },
+  {
+    path: "/login",
+    element: (
+      <Suspense fallback={<LoadingSpinner />}>
+        <Login />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/signup",
+    element: (
+      <Suspense fallback={<LoadingSpinner />}>
+        <SignUp />
+      </Suspense>
+    ),
+  },
+  {
+    element: <PrivateRoute />,
+    children: [
+      {
+        element: <Layout />, 
         children: [
-            {
-                index: true,
-                element: (
-                    <Suspense fallback={<LoadingSpinner />}>
-                        <Home />
-                    </Suspense>
-                )
-            },
-            {
-                path: 'users',
-                element: (
-                    <Suspense fallback={<LoadingSpinner />}>
-                        <Users />
-                    </Suspense>
-                )
-            },
-            {
-                path: 'medicines',
-                element: (
-                    <Suspense fallback={<LoadingSpinner />}>
-                        <Medicines />
-                    </Suspense>
-                )
-            }
-        ]
-    }
-])
+          {
+            path: "/home",
+            element: (
+              <Suspense fallback={<LoadingSpinner />}>
+                <Home />
+              </Suspense>
+            ),
+          },
+        ],
+      },
+    ],
+  },
+]);
 
-export const AppRouter = () => {
-    return <RouterProvider router={router} />
-}
+export const AppRouter = () => <RouterProvider router={router} />;

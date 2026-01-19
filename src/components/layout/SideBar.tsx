@@ -10,9 +10,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }: SideBarProps) => {
   const location = useLocation();
 
     const navItems = [
-    { id: 'Products', label: 'Products', icon: Home, path: '/' },
-    { id: 'users', label: 'Users', icon: Users, path: '/users' },
-     { id: 'medicines', label: 'Medicines', icon:Home, path: '/medicines' },
+    { id: 'Dashboard', label: 'DashBoard', icon: Home, path: '/home' },
   ];
 
   return(
