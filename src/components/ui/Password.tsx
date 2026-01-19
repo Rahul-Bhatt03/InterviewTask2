@@ -7,7 +7,7 @@ interface Pass {
     label?: string
 }
 
-export const PasswordUi = ({ password, showPass, onToggle, label = "Password" }: Pass) => {
+export const PasswordUi = ({ password, showPass, onToggle, label = "Password", onChange }: Pass & { onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
     return (
         <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
@@ -21,6 +21,7 @@ export const PasswordUi = ({ password, showPass, onToggle, label = "Password" }:
                     value={password}
                     type={showPass ? "text" : "password"}
                     placeholder="Enter your password"
+                    onChange={onChange}
                     className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 />
                 <button

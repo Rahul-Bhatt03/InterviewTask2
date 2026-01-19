@@ -1,29 +1,55 @@
 import { useState } from "react"
-import { Mail, Lock, LogIn, Github, Twitter } from "lucide-react"
+import { LogIn, Github, Twitter } from "lucide-react"
 import { PasswordUi } from "../components/ui/Password"
 import { EmailUi } from "../components/ui/Email"
+import { loginSchema, validateField } from "../validation/schemas"
+import { useLoginUserQuery } from "../hooks/Auth.hooks"
+import { generateMockToken } from "../utils/jwt"
+import { saveAuth } from "../utils/authStorage"
+import { useNavigate } from "react-router-dom"
 
 export const Login = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [hidePass, setHidePass] = useState(true)
     const [rememberMe, setRememberMe] = useState(false)
+    const [errors, setErrors] = useState<Record<string, string>>({})
+    const { data } = useLoginUserQuery({email,password});
+    const navigate = useNavigate()
 
     const togglePass = () => {
         setHidePass(!hidePass)
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const validateEmail = async (value: string) => {
+        const error = await validateField(loginSchema, 'email', value)
+        setErrors(prev => ({ ...prev, email: error || '' }))
+    }
+
+    const validatePassword = async (value: string) => {
+        const error = await validateField(loginSchema, 'password', value)
+        setErrors(prev => ({ ...prev, password: error || '' }))
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        // Login logic here
+        if (!data) {
+            alert("Invalid credentials");
+            return;
+        }
+
+        const user = data; // RTK query result
+
+        const token = generateMockToken(user.email);
+        saveAuth(user, token);
+
+        navigate("/home")
     }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
             <div className="max-w-md w-full">
-
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-
                     <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-center">
                         <div className="w-16 h-16 mx-auto bg-white/10 rounded-full flex items-center justify-center mb-4">
                             <LogIn size={32} className="text-white" />
@@ -34,13 +60,33 @@ export const Login = () => {
 
                     <div className="p-8">
                         <form onSubmit={handleSubmit} className="space-y-6">
-                            <EmailUi email={email} />
-                            
-                            <PasswordUi 
-                                password={password} 
-                                showPass={hidePass} 
-                                onToggle={togglePass}
-                            />
+                            <div>
+                                <EmailUi
+                                    email={email}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value)
+                                        validateEmail(e.target.value)
+                                    }}
+                                />
+                                {errors.email && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                                )}
+                            </div>
+
+                            <div>
+                                <PasswordUi
+                                    password={password}
+                                    showPass={hidePass}
+                                    onToggle={togglePass}
+                                    onChange={(e) => {
+                                        setPassword(e.target.value)
+                                        validatePassword(e.target.value)
+                                    }}
+                                />
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                                )}
+                            </div>
 
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center">
@@ -76,7 +122,6 @@ export const Login = () => {
                                 </div>
                             </div>
 
-                            {/* Social login */}
                             <div className="grid grid-cols-2 gap-3">
                                 <button
                                     type="button"

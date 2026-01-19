@@ -3,22 +3,38 @@ import { UserPlus, Check, Github, Twitter } from "lucide-react"
 import { NameUi } from "../components/ui/Name"
 import { EmailUi } from "../components/ui/Email"
 import { PasswordUi } from "../components/ui/Password"
+import { signupSchema, validateField } from "../validation/schemas"
+import { useRegisterUserMutation } from "../hooks/Auth.hooks"
 
 export const SignUp = () => {
     const [fullName, setFullName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
     const [hidePass, setHidePass] = useState(true)
     const [agreeTerms, setAgreeTerms] = useState(false)
+    const [errors, setErrors] = useState<Record<string, string>>({})
+    const [register] = useRegisterUserMutation({ fullName, email, password })
 
     const togglePass = () => {
         setHidePass(!hidePass)
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const validateFieldHandler = async (field: string, value: any) => {
+        const error = await validateField(signupSchema, field, value)
+        setErrors(prev => ({ ...prev, [field]: error || '' }))
+    }
+    const resetForm = () => {
+        setEmail("")
+        setFullName("")
+        setPassword("")
+        setAgreeTerms(false)
+        setErrors({})
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        // Signup logic here
+        await register({ fullName, email, password })
+        resetForm()
     }
 
     const passwordRequirements = [
@@ -26,13 +42,13 @@ export const SignUp = () => {
         { text: "Contains uppercase letter", met: /[A-Z]/.test(password) },
         { text: "Contains lowercase letter", met: /[a-z]/.test(password) },
         { text: "Contains number", met: /\d/.test(password) },
+        { text: "Contains special character", met: /[@$!%*?&]/.test(password) },
     ]
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
             <div className="max-w-2xl w-full">
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-   
                     <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-8 text-center">
                         <div className="w-20 h-20 mx-auto bg-white/10 rounded-full flex items-center justify-center mb-6">
                             <UserPlus size={40} className="text-white" />
@@ -43,25 +59,51 @@ export const SignUp = () => {
 
                     <div className="p-8">
                         <form onSubmit={handleSubmit} className="space-y-6">
-
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div>
-                                    <NameUi name={fullName} label="Full Name" />
+                                    <NameUi
+                                        name={fullName}
+                                        label="Full Name"
+                                        onChange={(e) => {
+                                            setFullName(e.target.value)
+                                            validateFieldHandler('fullName', e.target.value)
+                                        }}
+                                    />
+                                    {errors.fullName && (
+                                        <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+                                    )}
                                 </div>
                                 <div>
-                                    <EmailUi email={email} label="Email Address" />
+                                    <EmailUi
+                                        email={email}
+                                        label="Email Address"
+                                        onChange={(e) => {
+                                            setEmail(e.target.value)
+                                            validateFieldHandler('email', e.target.value)
+                                        }}
+                                    />
+                                    {errors.email && (
+                                        <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                                    )}
                                 </div>
                             </div>
 
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div>
-                                    <PasswordUi 
-                                        password={password} 
-                                        showPass={hidePass} 
+                                    <PasswordUi
+                                        password={password}
+                                        showPass={hidePass}
                                         onToggle={togglePass}
                                         label="Password"
+                                        onChange={(e) => {
+                                            setPassword(e.target.value)
+                                            validateFieldHandler('password', e.target.value)
+                                        }}
                                     />
-                                    
+                                    {errors.password && (
+                                        <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                                    )}
+
                                     <div className="mt-4 space-y-2">
                                         {passwordRequirements.map((req, index) => (
                                             <div key={index} className="flex items-center text-sm">
@@ -75,15 +117,22 @@ export const SignUp = () => {
                                         ))}
                                     </div>
                                 </div>
-                                
-                                <div>
+
+                                {/* <div>
                                     <PasswordUi 
                                         password={confirmPassword} 
                                         showPass={hidePass} 
                                         onToggle={togglePass}
                                         label="Confirm Password"
+                                        onChange={(e) => {
+                                            setConfirmPassword(e.target.value)
+                                            validateFieldHandler('confirmPassword', e.target.value)
+                                        }}
                                     />
-                                </div>
+                                    {errors.confirmPassword && (
+                                        <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+                                    )}
+                                </div> */}
                             </div>
 
                             <div className="flex items-start">
@@ -104,6 +153,9 @@ export const SignUp = () => {
                                         Privacy Policy
                                     </a>
                                 </label>
+                                {errors.agreeTerms && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.agreeTerms}</p>
+                                )}
                             </div>
 
                             <button

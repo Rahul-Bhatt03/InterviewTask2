@@ -5,7 +5,7 @@ interface Email {
     label?: string
 }
 
-export const EmailUi = ({ email, label = "Email Address" }: Email) => {
+export const EmailUi = ({ email, label = "Email Address", onChange }: Email & { onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
     return (
         <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
@@ -19,6 +19,7 @@ export const EmailUi = ({ email, label = "Email Address" }: Email) => {
                     value={email}
                     type="email"
                     placeholder="Enter your email"
+                    onChange={onChange}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 />
             </div>

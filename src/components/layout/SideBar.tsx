@@ -10,7 +10,7 @@ export const Sidebar = ({ isMobileOpen, setIsMobileOpen }: SideBarProps) => {
   const location = useLocation();
 
     const navItems = [
-    { id: 'Dashboard', label: 'DashBoard', icon: Home, path: '/' },
+    { id: 'Dashboard', label: 'DashBoard', icon: Home, path: '/home' },
   ];
 
   return(
