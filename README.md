@@ -28,6 +28,8 @@ MockAPI (mock REST API for CRUD)
 
 Tailwind CSS / UI Components
 
+LIVE URL : https://interview-task2.vercel.app/login
+
 ## Setup and Run
 
 1. Clone the repository:
